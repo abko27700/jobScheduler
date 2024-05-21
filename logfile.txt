@@ -1,0 +1,73 @@
+[2024-05-20 12:28:34.283]: cId:1289: heapProcessor: jobQueue size 0
+[2024-05-20 12:28:34.283]: cId:1289: heapProcessor: Unlocking heap and sleeping for 30 seconds
+[2024-05-20 12:28:45.753]: cId:1289: createTask: Start
+[2024-05-20 12:28:45.754]: cId:1289: createTask: Exiting Method. Time Taken: 0.001.001817
+[2024-05-20 12:28:45.754]: cId:123: addToHeap: Start
+[2024-05-20 12:28:45.755]: cId:123: addToHeap: Locked the queue
+[2024-05-20 12:28:45.755]: cId:123: addToHeap: Added job 24703 to heap
+[2024-05-20 12:28:45.755]: cId:123: addToHeap: Cancelling thread sleep due to new job.
+[2024-05-20 12:28:45.755]: cId:123: addToHeap: Exiting Method. Time Taken: 0.000.000713
+[2024-05-20 12:28:45.755]: cId:1289: heapProcessor: Sleep cancelled
+[2024-05-20 12:28:45.755]: cId:1289: heapProcessor: jobQueue size 1
+[2024-05-20 12:28:45.755]: cId:1289: heapProcessor: Calling executor for jobId: 24703 with time 1606870861
+[2024-05-20 12:28:45.755]: cId:1289: heapProcessor: jobQueue size 0
+[2024-05-20 12:28:45.756]: cId:1289: heapProcessor: Unlocking heap and sleeping for 30 seconds
+[2024-05-20 12:28:45.755]: cId:1: jobExecutor: Start
+[2024-05-20 12:28:45.756]: cId:1: jobExecutor: Executing jobId:24703
+[2024-05-20 12:28:45.756]: cId:1289: jobExecutor: Start
+[2024-05-20 12:28:45.756]: cId:1289: jobExecutor: Exiting Method. Time Taken: 0.000.000211
+[2024-05-20 12:28:45.756]: cId:1: jobExecutor: Task API URL: http://127.0.0.1:5000/events/forwardReports
+[2024-05-20 12:28:45.756]: cId:1: executePOSTRequest: Start
+[2024-05-20 12:28:50.056]: cId:1: executePOSTRequest: Response Status: 200 OK
+[2024-05-20 12:28:50.056]: cId:1: executePOSTRequest: Response Body: {
+  "message": "Reports forwarded successfully to Slack",
+  "response_msg": "Message sent successfully to aws-dev in projectdaria"
+}
+
+[2024-05-20 12:28:50.057]: cId:1: executePOSTRequest: Exiting Method. Time Taken: 4.4300.4300503
+[2024-05-20 12:28:50.057]: cId:1: addToHeap: Start
+[2024-05-20 12:28:50.057]: cId:1: addToHeap: Locked the queue
+[2024-05-20 12:28:50.057]: cId:1: addToHeap: Added job 24703 to heap
+[2024-05-20 12:28:50.057]: cId:1: addToHeap: Cancelling thread sleep due to new job.
+[2024-05-20 12:28:50.057]: cId:1: addToHeap: Exiting Method. Time Taken: 0.000.000189
+[2024-05-20 12:28:50.057]: cId:1: jobExecutor: Exiting Method. Time Taken: 4.4301.4301480
+[2024-05-20 12:28:50.057]: cId:1289: heapProcessor: Sleep cancelled
+[2024-05-20 12:28:50.057]: cId:1289: heapProcessor: jobQueue size 1
+[2024-05-20 12:28:50.057]: cId:1289: heapProcessor: Did not execute job: 24703 with time 2024-05-20 12:30:20
+[2024-05-20 12:28:50.057]: cId:1289: heapProcessor: Unlocking heap and sleeping for 30 seconds
+[2024-05-20 12:29:20.058]: cId:1289: heapProcessor: Slept for 30 seconds
+[2024-05-20 12:29:20.059]: cId:1289: heapProcessor: jobQueue size 1
+[2024-05-20 12:29:20.059]: cId:1289: heapProcessor: Did not execute job: 24703 with time 2024-05-20 12:30:20
+[2024-05-20 12:29:20.059]: cId:1289: heapProcessor: Unlocking heap and sleeping for 30 seconds
+[2024-05-20 12:29:50.060]: cId:1289: heapProcessor: Slept for 30 seconds
+[2024-05-20 12:29:50.062]: cId:1289: heapProcessor: jobQueue size 1
+[2024-05-20 12:29:50.062]: cId:1289: heapProcessor: Did not execute job: 24703 with time 2024-05-20 12:30:20
+[2024-05-20 12:29:50.062]: cId:1289: heapProcessor: Unlocking heap and sleeping for 30 seconds
+[2024-05-20 12:30:20.063]: cId:1289: heapProcessor: Slept for 30 seconds
+[2024-05-20 12:30:20.064]: cId:1289: heapProcessor: jobQueue size 1
+[2024-05-20 12:30:20.064]: cId:1289: heapProcessor: Calling executor for jobId: 24703 with time 1716222620
+[2024-05-20 12:30:20.064]: cId:1289: heapProcessor: jobQueue size 0
+[2024-05-20 12:30:20.064]: cId:1289: heapProcessor: Unlocking heap and sleeping for 30 seconds
+[2024-05-20 12:30:20.064]: cId:2: jobExecutor: Start
+[2024-05-20 12:30:20.065]: cId:2: jobExecutor: Executing jobId:24703
+[2024-05-20 12:30:20.065]: cId:1289: jobExecutor: Start
+[2024-05-20 12:30:20.065]: cId:1289: jobExecutor: Exiting Method. Time Taken: 0.000.000406
+[2024-05-20 12:30:20.065]: cId:2: jobExecutor: Task API URL: http://127.0.0.1:5000/events/forwardReports
+[2024-05-20 12:30:20.065]: cId:2: executePOSTRequest: Start
+[2024-05-20 12:30:20.891]: cId:2: executePOSTRequest: Response Status: 200 OK
+[2024-05-20 12:30:20.892]: cId:2: executePOSTRequest: Response Body: {
+  "message": "Reports forwarded successfully to Slack",
+  "response_msg": "Message sent successfully to aws-dev in projectdaria"
+}
+
+[2024-05-20 12:30:20.892]: cId:2: executePOSTRequest: Exiting Method. Time Taken: 1.826.826788
+[2024-05-20 12:30:20.892]: cId:2: addToHeap: Start
+[2024-05-20 12:30:20.892]: cId:2: addToHeap: Locked the queue
+[2024-05-20 12:30:20.892]: cId:2: addToHeap: Added job 24703 to heap
+[2024-05-20 12:30:20.893]: cId:2: addToHeap: Cancelling thread sleep due to new job.
+[2024-05-20 12:30:20.893]: cId:2: addToHeap: Exiting Method. Time Taken: 0.000.000303
+[2024-05-20 12:30:20.893]: cId:2: jobExecutor: Exiting Method. Time Taken: 1.828.828251
+[2024-05-20 12:30:20.893]: cId:1289: heapProcessor: Sleep cancelled
+[2024-05-20 12:30:20.893]: cId:1289: heapProcessor: jobQueue size 1
+[2024-05-20 12:30:20.893]: cId:1289: heapProcessor: Did not execute job: 24703 with time 2024-05-20 12:31:50
+[2024-05-20 12:30:20.893]: cId:1289: heapProcessor: Unlocking heap and sleeping for 30 seconds
