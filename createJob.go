@@ -17,12 +17,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// var (
-// 	// tasksMutex    sync.Mutex
-// 	taskIDCounter int
-// 	taskIDMutex   sync.Mutex
-// )
-
 func createTask(c *gin.Context) {
 	callerMethod := "createTask"
 	startTime := time.Now()
