@@ -19,7 +19,7 @@ func clearLogFile(filename string) error {
 	return nil
 }
 
-func log(clientId int, callerMethod string, msg string) {
+func log(callerMethod string, msg string) {
 	// Get the current time
 	now := time.Now()
 
@@ -39,7 +39,7 @@ func log(clientId int, callerMethod string, msg string) {
 	defer file.Close()
 
 	// Create the log message
-	logMessage := fmt.Sprintf("[%s]: cId:%d: %s: %s\n", timeFormat, clientId, callerMethod, msg)
+	logMessage := fmt.Sprintf("[%s]: %s: %s\n", timeFormat, callerMethod, msg)
 
 	// Write the log message to the file
 	if _, err := file.WriteString(logMessage); err != nil {
@@ -47,7 +47,7 @@ func log(clientId int, callerMethod string, msg string) {
 	}
 }
 
-func endLog(clientID int, callerMethod string, startTime time.Time) {
+func endLog(callerMethod string, startTime time.Time) {
 	elapsedTime := time.Since(startTime)
 
 	// Convert to seconds
@@ -60,5 +60,5 @@ func endLog(clientID int, callerMethod string, startTime time.Time) {
 	microseconds := elapsedTime.Microseconds()
 
 	// Log the elapsed time in the desired format
-	log(clientID, callerMethod, fmt.Sprintf("Exiting Method. Time Taken: %.0f.%03d.%06d", seconds, milliseconds, microseconds))
+	log(callerMethod, fmt.Sprintf("Exiting Method. Time Taken: %.0f.%03d.%06d", seconds, milliseconds, microseconds))
 }

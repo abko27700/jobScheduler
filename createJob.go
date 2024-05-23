@@ -6,10 +6,6 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
-
-	// "log"
-
-	// "log"
 	"net/http"
 	"os"
 	"time"
@@ -20,10 +16,10 @@ import (
 func createTask(c *gin.Context) {
 	callerMethod := "createTask"
 	startTime := time.Now()
-	clientId := 1289
-	log(clientId, callerMethod, "Start")
+	log(callerMethod, "Start")
+	validateUser(c)
 	defer func() {
-		endLog(clientId, callerMethod, startTime)
+		endLog(callerMethod, startTime)
 	}()
 	// Parse and validate request body
 	input, err := parseRequestBody(c)
@@ -57,7 +53,7 @@ func createTask(c *gin.Context) {
 
 	// Create Job and add to heap
 	job := Job{ID: taskID, Time: timeUTC.Unix()}
-	go addToHeap(job, input.UserID)
+	go addToHeap(job)
 
 	c.JSON(http.StatusOK, gin.H{"taskId": taskID})
 }
@@ -141,9 +137,6 @@ func loadExistingJobs() {
 	// Find the task with the given ID
 	for _, task := range tasks {
 		newJob := Job{ID: task.TaskID, Time: task.LastExecution.Unix()}
-		addToHeap(newJob, task.UserID)
-
-		// Send the job to addToHeap function
-		addToHeap(newJob, 1289) // Pass clientId or use a default value
+		addToHeap(newJob)
 	}
 }

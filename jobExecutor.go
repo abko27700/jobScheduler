@@ -17,21 +17,20 @@ type JobExecutionResult struct {
 	ElapsedTime time.Duration // Time taken to execute the job
 }
 
-func jobExecutor(jobId int, executionCount int) bool {
+func jobExecutor(jobId int) bool {
 	startTime := time.Now()
 	callerMethod := "jobExecutor"
-	clientId := executionCount
-	log(clientId, callerMethod, "Start")
+	log(callerMethod, "Start")
 	defer func() {
-		endLog(clientId, callerMethod, startTime)
+		endLog(callerMethod, startTime)
 	}()
 
-	log(clientId, callerMethod, fmt.Sprintf("Executing jobId:%d", jobId))
+	log(callerMethod, fmt.Sprintf("Executing jobId:%d", jobId))
 
 	task := getTask(jobId)
-	log(clientId, callerMethod, fmt.Sprintf("Task API URL: %s", task.APIURL))
+	log(callerMethod, fmt.Sprintf("Task API URL: %s", task.APIURL))
 	if task.APIMethod == "POST" {
-		executePOSTRequest(task, clientId)
+		executePOSTRequest(task)
 	}
 	nextExecution := time.Now().Add(time.Duration(task.Frequency) * time.Second).Unix()
 	newJob := Job{
@@ -39,27 +38,7 @@ func jobExecutor(jobId int, executionCount int) bool {
 		Time: nextExecution,
 		// Include other properties of the job as needed
 	}
-	addToHeap(newJob, clientId)
-
-	return true
-}
-
-func jobExecutorDummy(jobId int, executionCount int) bool {
-	// startTime := time.Now()
-	// callerMethod := "jobExecutor"
-	// clientId := executionCount
-	// log(clientId, callerMethod, "Start")
-	// defer func() {
-	// 	endLog(clientId, callerMethod, startTime)
-	// }()
-
-	// log(clientId, callerMethod, fmt.Sprintf("Executing jobId:%d", jobId))
-
-	// task := getTask(jobId)
-	// log(clientId, callerMethod, fmt.Sprintf("Task API URL: %s", task.APIURL))
-	// if task.APIMethod == "POST" {
-	// 	executePOSTRequest(task, clientId)
-	// }
+	addToHeap(newJob)
 
 	return true
 }
@@ -67,11 +46,10 @@ func jobExecutorDummy(jobId int, executionCount int) bool {
 func getTask(taskId int) Task {
 	startTime := time.Now()
 	callerMethod := "jobExecutor"
-	clientId := 1289
-	log(clientId, callerMethod, "Start")
+	log(callerMethod, "Start")
 
 	defer func() {
-		endLog(clientId, callerMethod, startTime)
+		endLog(callerMethod, startTime)
 	}()
 
 	data, err := os.ReadFile("data.json")
@@ -97,12 +75,12 @@ func getTask(taskId int) Task {
 	return Task{} // Task not found
 }
 
-func executePOSTRequest(task Task, clientId int) JobExecutionResult {
+func executePOSTRequest(task Task) JobExecutionResult {
 	startTime := time.Now()
 	callerMethod := "executePOSTRequest"
-	log(clientId, callerMethod, "Start")
+	log(callerMethod, "Start")
 	defer func() {
-		endLog(clientId, callerMethod, startTime)
+		endLog(callerMethod, startTime)
 	}()
 
 	result := JobExecutionResult{} // Initialize the result struct
@@ -157,8 +135,8 @@ func executePOSTRequest(task Task, clientId int) JobExecutionResult {
 	}
 
 	// Print the response status and body
-	log(clientId, callerMethod, fmt.Sprintf("Response Status: %s", resp.Status))
-	log(clientId, callerMethod, fmt.Sprintf("Response Body: %s", body))
+	log(callerMethod, fmt.Sprintf("Response Status: %s", resp.Status))
+	log(callerMethod, fmt.Sprintf("Response Body: %s", body))
 
 	result.Status = "success"
 	result.ElapsedTime = time.Since(startTime)
