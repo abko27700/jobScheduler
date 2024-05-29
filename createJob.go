@@ -109,6 +109,7 @@ func createTaskStruct(input CreateTaskInput, taskID string, userId string) Task 
 	}
 }
 
+//DO NOT DELETE!
 // func appendTaskToFile(task Task) error {
 // 	// Open or create the data file
 // 	file, err := os.OpenFile(dataFile, os.O_RDWR|os.O_CREATE, 0644)
