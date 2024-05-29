@@ -11,8 +11,8 @@ func main() {
 	r := gin.Default()
 	r.Use(apiKeyAuthMiddleware)
 	r.POST("/tasks", createTask)
+	r.DELETE("/tasks/:taskID", deleteTask)
 	r.Run(":8080")
-	// jobExecutor()
 	select {}
 }
 

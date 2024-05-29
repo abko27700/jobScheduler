@@ -20,29 +20,30 @@ var (
 func heapProcessor() {
 
 	callerMethod := "heapProcessor"
-	executionCount := 0
 	for {
 		isSleeping = false
 		queueLock.Lock() // Lock the queue to safely access/modify it
 		log(callerMethod, fmt.Sprintf("jobQueue size %d", jobQueue.Len()))
 		unlocked := false
+		sleepDuration := waitTime * time.Minute
 		if len(jobQueue) > 0 {
 			job := jobQueue.Peek()
+			log(callerMethod, fmt.Sprintf("Next JobId: %s", job.ID))
 			currTime := time.Now().Unix()
 			if currTime >= job.Time {
 				job := jobQueue.Pop().(Job)
 				queueLock.Unlock() // Unlock before executing the job
-				executionCount += 1
 				unlocked = true
-				log(callerMethod, fmt.Sprintf("Calling executor for jobId: %d with time %d", job.ID, job.Time))
+				log(callerMethod, fmt.Sprintf("Calling executor for jobId: %s with time %d", job.ID, job.Time))
 				//Instead of executing the jobs one at a time, execute them concurrently using go routines. The execution may take time.
 				go jobExecutor(job.ID)
 				continue
 			} else {
-				log(callerMethod, fmt.Sprintf("Did not execute job: %d with time %s", job.ID, time.Unix(job.Time, 0).Format("2006-01-02 15:04:05")))
+				sleepDuration = time.Duration(job.Time-currTime) * time.Second
+				log(callerMethod, fmt.Sprintf("Did not execute job: %s with time %s", job.ID, time.Unix(job.Time, 0).Format("2006-01-02 15:04:05")))
 			}
 		}
-		log(callerMethod, fmt.Sprintf("Unlocking heap and sleeping for %d seconds", waitTime))
+		log(callerMethod, fmt.Sprintf("Unlocking heap and sleeping for %s", sleepDuration))
 		if !unlocked {
 			queueLock.Unlock()
 		}
@@ -51,7 +52,7 @@ func heapProcessor() {
 		// Can make this logic super dynamic. For now, the job waits for a fixed period.
 		isSleeping = true
 		sleeperCtx, sleeperCtxCancel = context.WithCancel(context.Background())
-		err := sleep(sleeperCtx, waitTime*time.Second)
+		err := sleep(sleeperCtx, sleepDuration)
 		if err != nil {
 			log(callerMethod, "Sleep cancelled")
 			continue
@@ -72,7 +73,7 @@ func addToHeap(newJob Job) {
 	}()
 
 	heap.Push(&jobQueue, newJob)
-	log(callerMethod, fmt.Sprintf("Added job %d to heap", newJob.ID))
+	log(callerMethod, fmt.Sprintf("Added job %s to heap", newJob.ID))
 
 	if isSleeping {
 		log(callerMethod, "Cancelling thread sleep due to new job.")

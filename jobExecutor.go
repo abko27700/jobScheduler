@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -17,7 +16,7 @@ type JobExecutionResult struct {
 	ElapsedTime time.Duration // Time taken to execute the job
 }
 
-func jobExecutor(jobId int) bool {
+func jobExecutor(jobId string) bool {
 	startTime := time.Now()
 	callerMethod := "jobExecutor"
 	log(callerMethod, "Start")
@@ -25,55 +24,71 @@ func jobExecutor(jobId int) bool {
 		endLog(callerMethod, startTime)
 	}()
 
-	log(callerMethod, fmt.Sprintf("Executing jobId:%d", jobId))
+	if isTaskDeleted(jobId) {
+		log(callerMethod, fmt.Sprintf("Not executing since jobId:%s is deleted.", jobId))
+		return true
+	}
 
-	task := getTask(jobId)
+	task, err := getTaskFromDB(jobId)
+	if err != nil {
+		log(callerMethod, err.Error())
+		return false
+	}
+
 	log(callerMethod, fmt.Sprintf("Task API URL: %s", task.APIURL))
+	log(callerMethod, fmt.Sprintf("Executing jobId:%s", jobId))
 	if task.APIMethod == "POST" {
-		executePOSTRequest(task)
+		executePOSTRequest(*task)
 	}
-	nextExecution := time.Now().Add(time.Duration(task.Frequency) * time.Second).Unix()
-	newJob := Job{
-		ID:   task.TaskID,
-		Time: nextExecution,
-		// Include other properties of the job as needed
+	task.LastExecution = time.Now()
+	task.TotalExecutions += 1
+	if task.TotalExecutions != 30 {
+		nextExecution := time.Now().Add(time.Duration(task.Frequency) * time.Second)
+		newJob := Job{
+			ID:   task.TaskID,
+			Time: nextExecution.Unix(),
+		}
+		addToHeap(newJob)
+		task.NextExecution = nextExecution
 	}
-	addToHeap(newJob)
+	updateTaskInDb(task)
 
 	return true
 }
 
-func getTask(taskId int) Task {
-	startTime := time.Now()
-	callerMethod := "jobExecutor"
-	log(callerMethod, "Start")
+//DO NOT DELETE!!
+// Should create the task object for the executable
+// func getTaskFromJson(taskId string) Task {
+// 	startTime := time.Now()
+// 	callerMethod := "jobExecutor"
+// 	log(callerMethod, "Start")
 
-	defer func() {
-		endLog(callerMethod, startTime)
-	}()
+// 	defer func() {
+// 		endLog(callerMethod, startTime)
+// 	}()
 
-	data, err := os.ReadFile("data.json")
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return Task{}
-	}
+// 	data, err := os.ReadFile("data.json")
+// 	if err != nil {
+// 		fmt.Println("Error reading file:", err)
+// 		return Task{}
+// 	}
 
-	// Unmarshal JSON data into a slice of tasks
-	var tasks []Task
-	if err := json.Unmarshal(data, &tasks); err != nil {
-		fmt.Println("Error unmarshalling JSON:", err)
-		return Task{}
-	}
+// 	// Unmarshal JSON data into a slice of tasks
+// 	var tasks []Task
+// 	if err := json.Unmarshal(data, &tasks); err != nil {
+// 		fmt.Println("Error unmarshalling JSON:", err)
+// 		return Task{}
+// 	}
 
-	// Find the task with the given ID
-	for _, t := range tasks {
-		if t.TaskID == taskId {
-			return t
-		}
-	}
+// 	// Find the task with the given ID
+// 	for _, t := range tasks {
+// 		if t.TaskID == taskId {
+// 			return t
+// 		}
+// 	}
 
-	return Task{} // Task not found
-}
+// 	return Task{} // Task not found
+// }
 
 func executePOSTRequest(task Task) JobExecutionResult {
 	startTime := time.Now()

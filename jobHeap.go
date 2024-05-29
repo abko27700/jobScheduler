@@ -4,7 +4,7 @@ type jobHeap []Job
 
 // Implementing heap.Interface methods for jobHeap
 func (h jobHeap) Len() int           { return len(h) }
-func (h jobHeap) Less(i, j int) bool { return h[i].Time > h[j].Time }
+func (h jobHeap) Less(i, j int) bool { return h[i].Time < h[j].Time }
 func (h jobHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
 func (h jobHeap) Peek() Job {

@@ -1,6 +1,6 @@
 package main
 
 type Job struct {
-	ID   int
+	ID   string
 	Time int64
 }

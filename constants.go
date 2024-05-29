@@ -1,4 +1,4 @@
 package main
 
-const dataFile = "data.json"
-const waitTime = 30
+// const dataFile = "data.json"
+const waitTime = 60

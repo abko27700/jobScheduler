@@ -1,13 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"math/rand"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -17,10 +13,12 @@ func createTask(c *gin.Context) {
 	callerMethod := "createTask"
 	startTime := time.Now()
 	log(callerMethod, "Start")
-	validateUser(c)
 	defer func() {
 		endLog(callerMethod, startTime)
 	}()
+	validationStatus, jobCount := validateUserCounts(c)
+	log(callerMethod, fmt.Sprintf("Validation status: %v", validationStatus))
+
 	// Parse and validate request body
 	input, err := parseRequestBody(c)
 	if err != nil {
@@ -29,19 +27,9 @@ func createTask(c *gin.Context) {
 	}
 
 	// Generate Task ID
-	taskID, err := generateTaskID()
+	taskID, err := generateTaskID(c, jobCount)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate task ID"})
-		return
-	}
-
-	// Create Task struct
-	task := createTaskStruct(input, taskID)
-
-	// Append task to file
-	err = appendTaskToFile(task)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write to data file"})
 		return
 	}
 
@@ -51,8 +39,26 @@ func createTask(c *gin.Context) {
 		return
 	}
 
+	userId := c.GetString("userId")
+	log(callerMethod, userId)
+	log(callerMethod, taskID)
+	// Create Task struct
+	task := createTaskStruct(input, taskID, userId)
+
+	// Append task to file
+	// appendTaskToFile(task)
+	err = appendTaskToDynamoDB(task)
+
+	if err != nil {
+		log(callerMethod, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert into db"})
+		return
+	}
+
+	updatetJobCount(c, jobCount+1)
+
 	// Create Job and add to heap
-	job := Job{ID: taskID, Time: timeUTC.Unix()}
+	job := Job{taskID, timeUTC.Unix()}
 	go addToHeap(job)
 
 	c.JSON(http.StatusOK, gin.H{"taskId": taskID})
@@ -69,13 +75,24 @@ func parseRequestBody(c *gin.Context) (CreateTaskInput, error) {
 	return input, nil
 }
 
-func generateTaskID() (int, error) {
-	return rand.Intn(100000), nil
+func generateTaskID(c *gin.Context, jobCount int64) (string, error) {
+	callerMethod := "generateTaskID"
+	// Fetch userID and jobCount from the context
+	userID := c.GetString("userId")
+
+	jobCount += 1
+	log(callerMethod, fmt.Sprintf("Updated count %d", jobCount))
+
+	// Construct the task ID
+	taskID := fmt.Sprintf("%s_%d", userID, jobCount)
+	log(callerMethod, taskID)
+
+	return taskID, nil
 }
 
-func createTaskStruct(input CreateTaskInput, taskID int) Task {
+func createTaskStruct(input CreateTaskInput, taskID string, userId string) Task {
 	lastExecution := time.Date(2017, time.January, 1, 0, 0, 0, 0, time.UTC)
-	// log(99, "createTaskStruct apiUrl: ", input.APIURL)
+	timeUTC, _ := time.Parse("2006-01-02 15:04:05", input.StartFrom)
 	return Task{
 		TaskID:              taskID,
 		LastExecution:       lastExecution,
@@ -86,57 +103,36 @@ func createTaskStruct(input CreateTaskInput, taskID int) Task {
 		TimeOutAfter:        0,
 		StartFrom:           input.StartFrom,
 		Frequency:           input.Frequency,
-		UserID:              input.UserID,
+		UserID:              userId,
 		APIBody:             input.APIBody,
+		NextExecution:       timeUTC,
 	}
 }
 
-func appendTaskToFile(task Task) error {
-	// Open or create the data file
-	file, err := os.OpenFile(dataFile, os.O_RDWR|os.O_CREATE, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
+// func appendTaskToFile(task Task) error {
+// 	// Open or create the data file
+// 	file, err := os.OpenFile(dataFile, os.O_RDWR|os.O_CREATE, 0644)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer file.Close()
 
-	// Decode existing tasks from file
-	var tasks []Task
-	if err := json.NewDecoder(file).Decode(&tasks); err != nil && err != io.EOF {
-		return err
-	}
+// 	// Decode existing tasks from file
+// 	var tasks []Task
+// 	if err := json.NewDecoder(file).Decode(&tasks); err != nil && err != io.EOF {
+// 		return err
+// 	}
 
-	// Append the new task
-	tasks = append(tasks, task)
+// 	// Append the new task
+// 	tasks = append(tasks, task)
 
-	// Seek to the beginning of the file to overwrite its contents
-	file.Seek(0, 0)
+// 	// Seek to the beginning of the file to overwrite its contents
+// 	file.Seek(0, 0)
 
-	// Write the tasks back to the file
-	if err := json.NewEncoder(file).Encode(tasks); err != nil {
-		return err
-	}
+// 	// Write the tasks back to the file
+// 	if err := json.NewEncoder(file).Encode(tasks); err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
-
-// This function ensures that the saved jobs are loaded into the heap. Currently loading them using json. Later will load using dynamoDB.
-func loadExistingJobs() {
-	// Read data from the data.json file
-	data, err := os.ReadFile("data.json")
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-	}
-
-	// Unmarshal JSON data into a slice of tasks
-	var tasks []Task
-	if err := json.Unmarshal(data, &tasks); err != nil {
-		fmt.Println("Error unmarshalling JSON:", err)
-		return
-	}
-
-	// Find the task with the given ID
-	for _, task := range tasks {
-		newJob := Job{ID: task.TaskID, Time: task.LastExecution.Unix()}
-		addToHeap(newJob)
-	}
-}
+// 	return nil
+// }
