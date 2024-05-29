@@ -5,10 +5,10 @@ files:
     destination: /home/ec2-user/projectDaria/jobScheduler
 hooks:
   AfterInstall:
-    - location: afterUpdate.sh
+    - location: afterInstall.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: start.sh
+    - location: afterUpdate.sh
       timeout: 300
       runas: root
