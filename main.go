@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
 	executeBeforeStart()
 	r := gin.Default()
 	r.Use(apiKeyAuthMiddleware)
