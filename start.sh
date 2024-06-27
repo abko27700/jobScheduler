@@ -2,4 +2,7 @@
 go mod init daria.com/jobScheduler
 go mod tidy
 go build
-./jobScheduler
+nohup ./jobScheduler &
+
+# Exit the script
+exit 0

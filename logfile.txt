@@ -1,0 +1,27 @@
+[2024-06-27 15:46:39.178]: heapProcessor: Slept for 60 seconds
+[2024-06-27 15:46:39.178]: heapProcessor: jobQueue size 1
+[2024-06-27 15:46:39.178]: heapProcessor: Next JobId: abhi_3@daria.com_1
+[2024-06-27 15:46:39.179]: heapProcessor: Calling executor for jobId: abhi_3@daria.com_1 with time 1719517599
+[2024-06-27 15:46:39.179]: heapProcessor: jobQueue size 0
+[2024-06-27 15:46:39.179]: heapProcessor: Unlocking heap and sleeping for 1h0m0s
+[2024-06-27 15:46:39.179]: jobExecutor: Start
+[2024-06-27 15:46:39.179]: getTaskFromDB: Start
+[2024-06-27 15:46:39.213]: getTaskFromDB: Exiting Method. Time Taken: 0.034.034226
+[2024-06-27 15:46:39.213]: jobExecutor: Task API URL: http://127.0.0.1:5000/events/forwardReports
+[2024-06-27 15:46:39.213]: jobExecutor: Executing jobId:abhi_3@daria.com_1
+[2024-06-27 15:46:39.213]: executePOSTRequest: Start
+[2024-06-27 15:46:39.214]: executePOSTRequest: Response Status: 403 Forbidden
+[2024-06-27 15:46:39.214]: executePOSTRequest: Response Body: 
+[2024-06-27 15:46:39.214]: executePOSTRequest: Exiting Method. Time Taken: 0.000.000483
+[2024-06-27 15:46:39.214]: addToHeap: Start
+[2024-06-27 15:46:39.214]: addToHeap: Locked the queue
+[2024-06-27 15:46:39.214]: addToHeap: Added job abhi_3@daria.com_1 to heap
+[2024-06-27 15:46:39.214]: addToHeap: Cancelling thread sleep due to new job.
+[2024-06-27 15:46:39.214]: addToHeap: Exiting Method. Time Taken: 0.000.000179
+[2024-06-27 15:46:39.214]: heapProcessor: Sleep cancelled
+[2024-06-27 15:46:39.214]: heapProcessor: jobQueue size 1
+[2024-06-27 15:46:39.214]: heapProcessor: Next JobId: abhi_3@daria.com_1
+[2024-06-27 15:46:39.214]: heapProcessor: Did not execute job: abhi_3@daria.com_1 with time 2024-06-27 15:47:39
+[2024-06-27 15:46:39.214]: heapProcessor: Unlocking heap and sleeping for 1m0s
+[2024-06-27 15:46:39.246]: updateTaskInDb: Updated the task
+[2024-06-27 15:46:39.246]: jobExecutor: Exiting Method. Time Taken: 0.067.067578
