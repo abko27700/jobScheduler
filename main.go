@@ -19,6 +19,7 @@ func main() {
 
 func executeBeforeStart() {
 	clearLogFile("logfile.txt")
+	log("executeBeforeStart", "Starting executeBeforeStart")
 	initializeDb()
 	jobQueue = make(jobHeap, 0)
 	heap.Init(&jobQueue)
