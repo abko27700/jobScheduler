@@ -31,6 +31,6 @@ jobs:
         run: |
           aws deploy create-deployment \
           --application-name jobScheduler \
-          --deployment-group-name dev \
+          --deployment-group-name dev-deployment \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
